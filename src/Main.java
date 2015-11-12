@@ -15,7 +15,13 @@ public class Main {
 		
 		double yDist = p2.getY() - p1.getY();
 		
-		return Math.atan(yDist / xDist);
+		double angle = Math.atan(yDist / xDist);
+		
+		if (angle < 0) {
+			angle = (Math.PI * 2) + angle;
+		}
+		
+		return angle;
 		
 	}
 

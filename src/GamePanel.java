@@ -35,6 +35,8 @@ public class GamePanel extends JPanel implements Runnable {
 		frame.add(this);
 
 		setPreferredSize(panelSize);
+		
+		frame.setTitle("Sheep Herding Simulator 2016");
 
 		frame.pack();
 
@@ -51,7 +53,8 @@ public class GamePanel extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		new GameThread(this).start();
-		generateSheep(5);
+		generateSheep(50);
+		Sheep.setPlayer(player);
 	}
 
 	public void refresh() {
@@ -74,6 +77,7 @@ public class GamePanel extends JPanel implements Runnable {
 				getHeight() - borderSize * 2);
 
 		for (Sheep s : sheep) {
+			s.update();
 			s.display(g2d);
 		}
 
@@ -81,10 +85,34 @@ public class GamePanel extends JPanel implements Runnable {
 		player.display(g2d);
 	}
 
-	private MyPoint randomPointInPlay() {
+	public MyPoint randomPointInPlay() {
 		return new MyPoint((Math.random() * (getWidth() - borderSize * 2))
 				+ borderSize, (Math.random() * (getWidth() - borderSize * 2))
 				+ borderSize);
+	}
+
+	public boolean pointInBounds(MyPoint p) {
+		if (p.getX() > borderSize
+				&& p.getX() < panelSize.getWidth() - borderSize) {
+			if (p.getY() > borderSize
+					&& p.getY() < panelSize.getHeight() - borderSize) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public MyPoint randomPointAtDist(MyPoint center, double radius) {
+
+		MyPoint newPoint = new MyPoint(-1, -1);
+
+		while (center.distance(newPoint) > radius) {
+
+			newPoint = randomPointInPlay();
+		}
+		
+		return newPoint;
+
 	}
 
 	private ArrayList<Sheep> generateSheep(int count) {
@@ -98,11 +126,10 @@ public class GamePanel extends JPanel implements Runnable {
 			while (regenerateSheep) {
 
 				newSheep = new Sheep((int) (Math.random() * 400) + 100,
-						(int) (Math.random() * 400) + 100,
-						(int) (Math.random() * 360), this);
+						(int) (Math.random() * 400) + 100, this);
 
 				regenerateSheep = false;
-				
+
 				if (newSheep.getLocation().distance(player.getLocation()) < 100) {
 					regenerateSheep = true;
 					continue;
@@ -123,8 +150,12 @@ public class GamePanel extends JPanel implements Runnable {
 
 		return sheep;
 	}
-	
+
 	private double getDist(int x1, int y1, int x2, int y2) {
 		return MyPoint.distance(x1, y1, x2, y2);
+	}
+
+	public ArrayList<Sheep> getSheep() {
+		return sheep;
 	}
 }
