@@ -2,12 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -36,7 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 		frame.add(this);
 
 		setPreferredSize(panelSize);
-		
+
 		frame.setTitle("Sheep Herding Simulator 2016");
 
 		frame.pack();
@@ -53,11 +47,29 @@ public class GamePanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
-		
-		int num = Integer.parseInt(JOptionPane.showInputDialog("How Many Sheep?"));
-		
+
+		int num = -1;
+
+		while (num < 0) {
+
+			try {
+
+				num = Integer.parseInt(JOptionPane
+						.showInputDialog("How Many Sheep?"));
+
+			} catch (Exception e) {
+				num = -1;
+				JOptionPane.showMessageDialog(null, "Please Enter A Valid Number");
+			}
+
+			if (num > -1) {
+				break;
+			}
+
+		}
+
 		new GameThread(this).start();
-		
+
 		generateSheep(Math.min(num, 100));
 		Sheep.setPlayer(player);
 	}
@@ -115,7 +127,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 			newPoint = randomPointInPlay();
 		}
-		
+
 		return newPoint;
 
 	}
@@ -154,10 +166,6 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 
 		return sheep;
-	}
-
-	private double getDist(int x1, int y1, int x2, int y2) {
-		return MyPoint.distance(x1, y1, x2, y2);
 	}
 
 	public ArrayList<Sheep> getSheep() {
