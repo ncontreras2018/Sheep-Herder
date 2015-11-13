@@ -11,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import util.MyPoint;
@@ -52,8 +53,12 @@ public class GamePanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
+		
+		int num = Integer.parseInt(JOptionPane.showInputDialog("How Many Sheep?"));
+		
 		new GameThread(this).start();
-		generateSheep(50);
+		
+		generateSheep(Math.min(num, 100));
 		Sheep.setPlayer(player);
 	}
 
